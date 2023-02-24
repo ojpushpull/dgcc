@@ -8,7 +8,7 @@ import {
 } from '@remix-run/react';
 import styles from './styles/app.css';
 import favicon from '../public/favicon.svg';
-import {Layout} from '/components/Layout';
+import {Layout} from 'app/components/Layout';
 
 export const links = () => {
   return [

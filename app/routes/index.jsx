@@ -1,4 +1,6 @@
 import { useLoaderData, Link } from '@remix-run/react';
+import { Image } from '@shopify/hydrogen';
+
 export const meta = () => {
     return {
         title: 'Hydrogen',

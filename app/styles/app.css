@@ -496,11 +496,11 @@ video {
 .w-full {
   width: 100%;
 }
-.max-w-prose {
-  max-width: 65ch;
-}
 .max-w-md {
   max-width: 28rem;
+}
+.max-w-prose {
+  max-width: 65ch;
 }
 .flex-grow {
   flex-grow: 1;

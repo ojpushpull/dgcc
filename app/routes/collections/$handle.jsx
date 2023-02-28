@@ -45,6 +45,15 @@ export default function Collection() {
   );
 }
 
+const seo = ({data}) => ({
+  title: data?.collection?.title,
+  description: data?.collection?.description,
+});
+export const handle = {
+  seo,
+};
+
+
 const COLLECTION_QUERY = `#graphql
   query CollectionDetails($handle: String!) {
     collection(handle: $handle) {

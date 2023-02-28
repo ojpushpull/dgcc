@@ -1,3 +1,4 @@
+import {Seo} from '@shopify/hydrogen';
 import {
   Links,
   Meta,
@@ -43,6 +44,7 @@ export default function App() {
   return (
     <html lang="en">
       <head>
+        <Seo />
         <Meta />
         <Links />
       </head>

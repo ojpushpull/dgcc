@@ -21,7 +21,7 @@ export default function ProductGrid({collection, url}) {
     function fetchMoreProducts() {
       // ?index differentiates index routes from their parent layout routes
     // https://remix.run/docs/en/v1/guides/routing#what-is-the-index-query-param
-      fetcher.load(`${url}?index&cursor=${endcursor}`);
+      fetcher.load(`${url}?index&cursor=${endCursor}`);
       }
 
       useEffect(()  => {

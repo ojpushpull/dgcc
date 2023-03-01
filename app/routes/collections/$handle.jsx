@@ -2,11 +2,15 @@ import {useLoaderData} from '@remix-run/react';
 import {json} from '@shopify/remix-oxygen';
 import ProductGrid from '~/components/ProductGrid';
 
-export async function loader({params, context}) {
+export async function loader({params, context, request}) {
   const {handle} = params;
+  const searchParams = new URL(request.url).searchParams;
+  const cursor = searchParams.get('cursor')
+
   const {collection} = await context.storefront.query(COLLECTION_QUERY, {
     variables: {
       handle,
+      cursor,
     },
   });
 
@@ -67,13 +71,18 @@ export const handle = {
 
 
 const COLLECTION_QUERY = `#graphql
-  query CollectionDetails($handle: String!) {
+  query CollectionDetails($handle: String!, $cursor: 
+    String) {
     collection(handle: $handle) {
       id
       title
       description
       handle
-      products(first: 4) {
+      products(first: 4, after: $cursor) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         nodes {
           id
           title

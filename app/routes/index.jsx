@@ -3,8 +3,8 @@ import {Image} from '@shopify/hydrogen';
 
 export const meta = () => {
   return {
-    title: "Hydrogen",
-    description: "A custom storefront powered by Hydrogen",
+    title: "Watah Dog",
+    description: "DDogs Worldd",
   };
 };
 

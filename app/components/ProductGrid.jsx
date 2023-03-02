@@ -20,7 +20,7 @@ export default function ProductGrid({collection, url}) {
 
     function fetchMoreProducts() {
       // ?index differentiates index routes from their parent layout routes
-    // https://remix.run/docs/en/v1/guides/routing#what-is-the-index-query-param
+    // https://remix.run/docs/eojjn/v1/guides/routing#what-is-the-index-query-param
       fetcher.load(`${url}?index&cursor=${endCursor}`);
       }
 

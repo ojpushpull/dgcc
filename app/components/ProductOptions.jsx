@@ -1,8 +1,21 @@
-import {Link, useLocation} from '@remix-run/react';
+
+import {
+    Link,
+    useLocation,
+    useSearchParams,
+    useTransition,
+  } from '@remix-run/react';
 
 export default function ProductOptions({options}) {
     // pathname and search will be used to build option URLS
+    const transition = useTransition();
     const {pathname, search} = useLocation();
+    const [currentSearchParams] = useSearchParams();
+
+    const searchParams = transition.location
+  ? new URLSearchParams(transition.location.search)
+  : currentSearchParams;
+
 
     return (
         <div className="grid gap-4 mb-6">
@@ -12,6 +25,8 @@ export default function ProductOptions({options}) {
                 if (!option.values.length) {
                     return;
                 }
+
+                const currentOptionVal = searchParams.get(option.name);
                 return (
                     <div
                         key={option.name}
@@ -24,7 +39,8 @@ export default function ProductOptions({options}) {
             <div className="flex flex-wrap items-baseline gap-4">
                 {option.values.map((value)  => {
                     // Build a URLSearchParams object from the search
-                    const linkParams = new URLSearchParams(search);
+                    const linkParams = new URLSearchParams(searchParams);
+                    const isSelected = currentOptionVal === value;
                     //set the option name and value
                     linkParams.set(option.name, value);
                     return (
@@ -33,8 +49,10 @@ export default function ProductOptions({options}) {
                             to={`${pathname}?${linkParams.toString()}`}
                             preventScrollReset
                             replace
-                            className="leading-none py-1 border-b-[1.5px] cursor-pointer transition-all duration-200"
-                  >
+                            className={`leading-none py-1 border-b-[1.5px] cursor-pointer transition-all duration-200 ${
+                                isSelected ? 'border-gray-500' : 'border-neutral-50'
+                              }`}
+                            >
                     {value}
                   </Link>
                     );

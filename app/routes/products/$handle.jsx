@@ -5,11 +5,20 @@ import ProductOptions from '~/components/ProductOptions';
 
 import {MediaFile} from '@shopify/hydrogen-react';
 
-export const loader = async ({params, context}) => {
+export const loader = async ({params, context, request}) => {
     const {handle} = params;
+    const searchParams = new URL(request.url).searchParams;
+    const selectedOptions = [];
+
+    // set selected options from the query string
+    searchParams.forEach((value, name) =>  {
+      selectedOptions.push({name, value});
+    });
+
     const {product} = await context.storefront.query(PRODUCT_QUERY, {
         variables: {
             handle,
+            selectedOptions,
         },
     });
 
@@ -18,7 +27,6 @@ export const loader = async ({params, context}) => {
     }
 
     return json({
-        handle,
         product,
     });
 }
@@ -54,6 +62,7 @@ export default function ProductHandle() {
             </span>
           </div>
           <ProductOptions options={product.options} />
+        
           <div
             className="prose border-t border-gray-200 pt-6 text-black text-md"
             dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
@@ -87,6 +96,7 @@ function ProductGallery({media}) {
                     ar: true,
                     loading: 'eager',
                     disableZoom: true,
+                    style: {height: '100%', margin: '0 auto'},
                 };
             }
 
@@ -105,15 +115,12 @@ function ProductGallery({media}) {
             className={`${
               i % 3 === 0 ? 'md:col-span-2' : 'md:col-span-1'
             } snap-center card-image bg-white aspect-square md:w-full w-[80vw] shadow-sm rounded`}
-            key={data.image.id}
+            key={data.id || data.image.id}
           >
             <MediaFile
               tabIndex="0"
               className={`w-full h-full aspect-square object-cover`}
               data={data}
-              options={{
-                crop: 'center',
-              }}
               {...extraProps}
             />
           </div>
@@ -124,31 +131,91 @@ function ProductGallery({media}) {
 }
 
 const PRODUCT_QUERY = `#graphql
-    query product($handle: String!) {
-        product(handle: $handle) {
-        id
-        title
-        handle
-        vendor
-        descriptionHtml
-        media(first: 10){
-            nodes {
-                ... on MediaImage {
-                    mediaContentType
-                    image {
-                        id
-                        url
-                        altText
-                        width
-                        height
-                    }
-                }
+  query product($handle: String!, $selectedOptions: [SelectedOptionInput!]!) {
+    product(handle: $handle) {
+      id
+      title
+      handle
+      vendor
+      descriptionHtml
+      media(first: 10) {
+        nodes {
+          ... on MediaImage {
+            mediaContentType
+            image {
+              id
+              url
+              altText
+              width
+              height
             }
+          }
+          ... on Model3d {
+            id
+            mediaContentType
+            sources {
+              mimeType
+              url
+            }
+          }
         }
-        options {
-            name,
-            values
+      }
+      options {
+        name,
+        values
+      }
+      selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {
+        id
+        availableForSale
+        selectedOptions {
+          name
+          value
+        }
+        image {
+          id
+          url
+          altText
+          width
+          height
+        }
+        price {
+          amount
+          currencyCode
+        }
+        compareAtPrice {
+          amount
+          currencyCode
+        }
+        sku
+        title
+        unitPrice {
+          amount
+          currencyCode
+        }
+        product {
+          title
+          handle
+        }
+      }
+      variants(first: 1) {
+        nodes {
+          id
+          title
+          availableForSale
+          price {
+            currencyCode
+            amount
+          }
+          compareAtPrice {
+            currencyCode
+            amount
+          }
+          selectedOptions {
+            name
+            value
+          }
         }
       }
     }
+  }
 `;

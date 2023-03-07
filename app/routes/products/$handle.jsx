@@ -2,6 +2,7 @@ import {json} from 'react-router';
 import { useLoaderData } from '@remix-run/react';
 import ProductOptions from '~/components/ProductOptions';
 import { MediaFile, Money, ShopPayButton } from '@shopify/hydrogen-react';
+import { useMatches, useFetcher } from '@remix-run/react';
 
 
 export const loader = async ({params, context, request}) => {
@@ -80,6 +81,7 @@ export default function ProductHandle() {
                 variantIds={[selectedVariant?.id]}
                 width={'400px'}
               />
+              <ProductForm variantId={selectedVariant?.id} />
               </div>
           )}
           <div
@@ -148,6 +150,30 @@ function ProductGallery({media}) {
         </div>
      );
 }
+
+function ProductForm({variantId}) {
+  const [root] = useMatches();
+  const selectedLocale = root?.data?.selectedLocale;
+  const fetcher = useFetcher();
+
+  const lines = [{merchandiseId: variantId, quantity: 1}];
+
+  return (
+    <fetcher.Form action="/cart" method="post">
+     <input type="hidden" name="cartAction" value={'ADD_TO_CART '} />
+     <input
+        type="hidden"
+        name="countryCode"
+        value={selectedLocale?.country ?? 'US'}
+        />
+        <input type="hidden" name="lines" value={JSON.stringify(lines)} />
+        <button className="bg-black text-white px-6 py-3 w-full rounded-md text-center font-medium max-w-[400px]">
+        Add to Bag
+      </button>
+    </fetcher.Form>
+  );
+}
+
 
 const PRODUCT_QUERY = `#graphql
   query product($handle: String!, $selectedOptions: [SelectedOptionInput!]!) {

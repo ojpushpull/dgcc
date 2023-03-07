@@ -188,7 +188,7 @@ const countryCode = formData.get('countryCode')
             cartId = result.cart.id;
             break;
         default:
-            throw new Error('Innvalidd cart action')
+            throw new Error('Innvalidd cart action');
     }
 
 

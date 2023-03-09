@@ -49,7 +49,7 @@ export async function loader({context}) {
 export default function App() {
   const data = useLoaderData();
 
-  const {name,description} = data.layout.shop;
+  const {name, description} = data.layout.shop;
 
   return (
     <ShopifyProvider {...shopifyConfig}>

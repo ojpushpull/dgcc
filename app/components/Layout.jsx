@@ -1,4 +1,14 @@
+import {Drawer, useDrawer} from '~/components/Drawer';
+import { useEffect } from 'react';
+
 export function Layout({children, title}) {
+    
+
+    const {isOpen, openDrawer, closeDrawer} = useDrawer();
+    
+    useEffect(() => {
+        openDrawer();
+      }, []);
     return (
         <div className="flex flex-col min-h-screen antialiased bg-neutral-50">
             <header
@@ -18,7 +28,12 @@ export function Layout({children, title}) {
             className="flex-grow p-6 md:p-8 lg:p-12"
         >
             {children}
+
+        <Drawer open={isOpen} onClose={closeDrawer}>
+        <h2>TODO Cart Data</h2>
+        </Drawer>
         </main>
         </div>
     );
 }
+

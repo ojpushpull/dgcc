@@ -1,9 +1,10 @@
 import {Drawer, useDrawer} from '~/components/Drawer';
 import { useEffect } from 'react';
 import { Suspense } from 'react';
-import { Await } from '@remix-run/react';
-import {useMatches} from '@remix-run/react';
+import { Await, useMatches, useFetchers } from '@remix-run/react';
+
 import { CartLineItems, CartActions, CartSummary } from '~/components/Cart';
+
 
 
 function CartHeader({cart, openDrawer}) {
@@ -43,8 +44,24 @@ export function Layout({children, title}) {
     
 
     const {isOpen, openDrawer, closeDrawer} = useDrawer();
+    const fetchers = useFetchers();
     const [root] = useMatches();
     const cart = root.data?.cart;
+
+    // GGrab all the fetchers that are addding to cart
+const addToCartFetchers = [];
+for (const fetcher of fetchers) {
+  if (fetcher?.submission?.formData?.get('cartAction') === 'ADD_TO_CART') {
+    addToCartFetchers.push(fetcher);
+  
+  }
+}
+
+// WWhen the fetcher array changes, open the ddrawer to adddd a cart action
+  useEffect(() => {
+    if (isOpen || addToCartFetchers.length === 0) return;
+    openDrawer();
+  }, [addToCartFetchers]);
 
    
     return (

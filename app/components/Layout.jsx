@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Suspense } from 'react';
 import { Await } from '@remix-run/react';
 import {useMatches} from '@remix-run/react';
-import { CartLineItems, CartActions, CartSummary } from '/components/Cart';
+import { CartLineItems, CartActions, CartSummary } from '~/components/Cart';
 
 
 function CartHeader({cart, openDrawer}) {
